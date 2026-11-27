@@ -2,7 +2,9 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>小北鼻紀錄</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-180.png">
@@ -24,7 +26,7 @@ body{font:14px/1.4 -apple-system,"PingFang TC","Noto Sans TC","Microsoft JhengHe
 button,input,textarea{font:inherit;color:inherit;border-radius:0;-webkit-appearance:none;appearance:none;background:none;border:0}
 button{cursor:pointer}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--acc);outline-offset:-2px}
-#app{max-width:480px;margin:0 auto;padding-bottom:16px}
+#app{max-width:480px;margin:0 auto;padding-top:env(safe-area-inset-top);padding-bottom:calc(16px + env(safe-area-inset-bottom))}
 .hd{display:flex;justify-content:space-between;align-items:center;gap:8px;height:60px;padding:0 16px 0 8px;border-bottom:1px solid var(--rule)}
 .hd small{display:block;font-size:12px;color:var(--sub);margin-bottom:4px}
 .mn{display:flex;align-items:center;min-width:0}
@@ -89,7 +91,7 @@ details li::before{content:"";position:absolute;left:0;top:12px;width:4px;height
 #sheet{position:fixed;left:0;right:0;bottom:0;max-height:88vh;overflow-y:auto;overflow-x:hidden;background:var(--bg);border-top:1px solid var(--rule2);z-index:10;display:none}
 #sheet .w{max-width:480px;margin:0 auto;padding:0 16px 16px}
 @supports(height:1dvh){#sheet{max-height:88dvh}}
-#sheet .w>.two:last-child{position:sticky;bottom:0;background:var(--bg);margin-top:12px;padding:12px 0 calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--rule)}
+#sheet .w>.two:last-child{position:sticky;bottom:0;background:var(--bg);margin-top:12px;padding:12px 0 calc(20px + env(safe-area-inset-bottom));border-top:1px solid var(--rule)}
 .sh{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--rule);position:sticky;top:0;background:var(--bg);z-index:1}
 .sh b{font-size:16px}.sh small{display:block;font-size:12px;color:var(--sub)}
 .sh button{width:44px;height:44px;font-size:20px;color:var(--sub);margin-right:-12px}
@@ -112,9 +114,9 @@ details li::before{content:"";position:absolute;left:0;top:12px;width:4px;height
 .ch button.on{background:var(--chigh);color:var(--fg);outline:2px solid #e0b45a;outline-offset:-2px}
 textarea{width:100%;min-height:72px;border:1px solid var(--rule2);padding:8px;font-size:16px;resize:vertical}
 .hint{font-size:12px;color:var(--sub);margin-top:4px}
-#toast{position:fixed;left:0;right:0;bottom:0;background:var(--acc);color:var(--bg);text-align:center;padding:12px;font-weight:700;z-index:20;display:none}
+#toast{position:fixed;left:0;right:0;bottom:0;background:var(--acc);color:var(--bg);text-align:center;padding:12px 12px calc(12px + env(safe-area-inset-bottom));font-weight:700;z-index:20;display:none}
 .foot{font-size:12px;color:var(--sub);padding:12px 16px}
-#login{position:fixed;inset:0;background:var(--bg);z-index:30;display:flex;flex-direction:column;justify-content:center;padding:16px}
+#login{position:fixed;inset:0;background:var(--bg);z-index:30;display:none;flex-direction:column;justify-content:center;padding:16px}
 #login .w{max-width:480px;margin:0 auto;width:100%}
 #login h1{font-size:20px;margin-bottom:8px}
 #login p{font-size:14px;color:var(--sub);margin-bottom:16px}
@@ -180,7 +182,7 @@ textarea{width:100%;min-height:72px;border:1px solid var(--rule2);padding:8px;fo
     <div class="st"><label>平均週期</label><output id="sa"></output></div>
     <div class="two"><button class="bt" id="ex">匯出備份</button><button class="bt" id="im">匯入舊紀錄</button></div>
   </div>
-  <div class="foot">資料存在雲端，兩人手機即時同步；沒有網路時也能記錄，連線後自動上傳。推算僅供參考，不能取代醫療判斷。</div>
+  <div class="foot">版本 2026112702｜資料存在雲端，兩人手機即時同步；沒有網路時也能記錄，連線後自動上傳。推算僅供參考，不能取代醫療判斷。</div>
   <div class="who"><span id="me"></span><button id="lgout">登出</button></div>
 </div>
 <div id="mask"></div>
@@ -372,6 +374,9 @@ $('sl').onchange=e=>{const v=+e.target.value;if(v>=9&&v<=17){S.set.lut=v;saveSet
 $('ex').onclick=()=>open('<div class="sh"><div><b>匯出備份</b><small>複製後貼到記事本或傳給自己保存</small></div><button data-a="x">✕</button></div><div class="f"><textarea id="bk" style="min-height:200px;font-size:12px" readonly>'+esc(JSON.stringify(S))+'</textarea></div><div class="two"><button class="bt" data-a="x">關閉</button><button class="bt p" data-a="cp">複製</button></div>');
 $('im').onclick=()=>open('<div class="sh"><div><b>匯入備份</b><small>貼上從舊網頁匯出的內容；已有紀錄的日期不會被覆蓋</small></div><button data-a="x">✕</button></div><div class="f"><textarea id="bk" style="min-height:200px;font-size:12px" placeholder="貼上備份內容"></textarea></div><div class="two"><button class="bt" data-a="x">取消</button><button class="bt p" data-a="imp">匯入</button></div>');
 let tt;function toast(m){const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(tt);tt=setTimeout(()=>t.style.display='none',1800)}
+const VER='2026112702';
+const chkVer=()=>{fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.json()).then(j=>{if(j.v&&j.v!==VER){let n=0;try{n=+sessionStorage.getItem('vr')||0;sessionStorage.setItem('vr',n+1)}catch(e){}if(n<2)location.replace(location.pathname+'?v='+j.v)}}).catch(()=>{})};
+chkVer();document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')chkVer()});
 const showLogin=m=>{$('lmsg').textContent=m;$('login').style.display='flex'};
 $('lgin').onclick=()=>{const pv=new firebase.auth.GoogleAuthProvider();pv.setCustomParameters({prompt:'select_account'});
   auth.signInWithPopup(pv).catch(e=>{if(/popup/.test(e.code||''))auth.signInWithRedirect(pv);else toast('登入失敗')})};
